@@ -1,0 +1,19 @@
+---
+title: "GitHub R Intro"
+author: "Clara Feigelson"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+# Call setup.R code so that all necessary packages are loaded
+source("setup.R")
+```
+
+```{r}
+# Call/load penguin data into environment (initial upload calls it "raw")
+data("penguins")
+
+# Calls penguin dataset as a dataframe (tibble)
+penguins
+```
