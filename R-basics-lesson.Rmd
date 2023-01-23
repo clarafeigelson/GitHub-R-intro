@@ -101,6 +101,9 @@ index1<-index1[index1$island=='Dream',]
 ```
 
 ```{r}Question 4}
-index2<-penguins[, c("")]
+index2<-penguins[penguins$island=='Dream',]
 
+index2<-index2[1:56,]
+
+mean(index2$flipper_length_mm)
 ```
