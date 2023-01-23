@@ -1,3 +1,5 @@
+# Week 1 - Intro-basics lesson
+
 ---
 title: "GitHub R Intro"
 author: "Clara Feigelson"
@@ -5,10 +7,14 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
+### Set up
+
 ```{r}
 # Call setup.R code so that all necessary packages are loaded
 source("setup.R")
 ```
+
+### 6.1 The penguins data
 
 ```{r}
 # Call/load penguin data into environment (initial upload calls it "raw")
@@ -16,4 +22,85 @@ data("penguins")
 
 # Calls penguin dataset as a dataframe (tibble)
 penguins
+
+```
+
+### 6.2 Data Types
+
+```{r}
+# class () describes the data type of the object
+class(penguins)
+# str () shows the structure of the object --> in this case the structure of the penguins tibble
+str(penguins)
+
+class(penguins$species)
+str(penguins$species)
+```
+
+```{r}
+# myList object
+myList <- list("apple", 1993, FALSE, penguins)
+str(myList)
+list(myList, list("more stuff here", list("and more")))
+names(myList) <- c("fruit", "year", "logic", "data")
+names(myList)
+```
+
+### 6.3 Indexing
+
+```{r}
+# Code copied from the lesson
+
+# for lists we use double brackes [[]]
+myList[[1]]
+
+myList[["data"]]
+
+# for vectors we use single brackets []
+myVector <- c("apple", "banana", "pear")
+myVector[2]
+
+# dataframe[row(s), columns()]
+penguins[1:5, 2]
+
+penguins[1:5, "island"]
+
+penguins[1, 1:5]
+
+penguins[1:5, c("species","sex")]
+
+penguins[penguins$sex=='female',]
+
+# $ for a single column
+penguins$species
+
+```
+
+## 6.3.1 Exercises
+
+```{r} Question 1}
+myList["fruit"]
+
+penguins$flipper_length_mm
+
+penguins[penguins$island=='Dream',]
+
+```
+
+```{r} Question 2}
+unique(penguins$species, incomparables = FALSE)
+
+unique(penguins$island, incomparables = FALSE)
+```
+
+```{r}Question 3}
+index1<-penguins[, c("species","island","flipper_length_mm")]
+
+index1<-index1[index1$island=='Dream',]
+
+```
+
+```{r}Question 4}
+index2<-penguins[, c("")]
+
 ```
