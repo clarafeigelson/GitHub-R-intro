@@ -101,9 +101,73 @@ index1<-index1[index1$island=='Dream',]
 ```
 
 ```{r}Question 4}
-index2<-penguins[penguins$island=='Dream',]
-
-index2<-index2[1:56,]
+# using & in base R allows you to index based on multiple criteria in a row
+index2<-penguins[penguins$island=='Dream' & penguins$species == 'Adelie',]
 
 mean(index2$flipper_length_mm)
 ```
+
+### 6.4 The dplyr package
+
+```{r}
+# Copied from lesson plan
+
+## subset rows with filter()
+filter(penguins, species == "Adelie")
+
+filter(penguins, species != "Adelie")
+
+# indexes all penguins from Dream and Torgersen islands that are not missing data for bill_length_mm
+filter(penguins, island %in% c("Dream", "Torgersen") & !is.na(bill_length_mm))
+
+## Select columns with select()
+
+# Select two specific variables
+select(penguins, species, sex)
+
+# Select a range of variables
+select(penguins, species:flipper_length_mm)
+
+# Rename columns within select
+select(penguins, genus = species, island)
+
+# Select column variables that are recorded in mm
+select(penguins, contains("mm"))
+
+## create new variables with mutate()
+
+# New variable that calculates bill length in cm
+mutate(penguins, bill_length_cm = bill_length_mm/10)
+
+# mutate based on conditional statements
+mutate(penguins, species_sex = if_else(sex == 'male', paste0(species,"_m"), paste0(species, "_f")))
+```
+
+### 6.4.1 The pipe %\>%
+
+```{r}
+# Copied from lesson plan
+
+penguins %>% 
+  filter(island == "Dream") %>% 
+  mutate(flipper_length_cm = flipper_length_mm/10) %>% 
+  select(species, year, flipper_length_cm)
+
+# average body mass by species
+penguins %>% 
+  group_by(species) %>% 
+  summarise(body_mass_avg = mean(body_mass_g, na.rm = TRUE))
+
+# count of species by year
+penguins %>% 
+  group_by(species, year) %>% 
+  summarise(n_observations = n())
+```
+
+## 6.3.2 Exercises
+
+```{r}
+
+```
+
+## 
