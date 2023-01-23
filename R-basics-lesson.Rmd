@@ -166,7 +166,9 @@ penguins %>%
 
 ## 6.3.2 Exercises
 
-```{r}
+```{r} Question 1}
+penguins %>%
+  select(year, everything())
 
 ```
 
