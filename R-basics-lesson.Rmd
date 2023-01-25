@@ -180,7 +180,14 @@ penguins %>%
 ```
 
 ```{r} Question 3}
-
+penguins %>%
+  group_by(year, species) %>%
+  summarise(body_mass_avg = mean(body_mass_g, na.r = TRUE)) %>%
+  arrange(desc(body_mass_avg))
+  
 ```
 
-## 
+```{r} Question 4}
+penguins %>% 
+  filter(!(year %in% c(2008, 2009)))
+```
