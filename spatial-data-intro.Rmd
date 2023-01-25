@@ -1,0 +1,8 @@
+---
+title: "spatial-data-intro"
+author: "Clara Feigelson"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Intro to Spatial Data in R (Day 2)
