@@ -172,4 +172,15 @@ penguins %>%
 
 ```
 
+```{r} Question 2}
+penguins %>%
+  add_column(size_group = 0) %>%
+  mutate(size_group = if_else(body_mass_g > mean(body_mass_g,na.rm  = TRUE), 'large', 'small'))
+
+```
+
+```{r} Question 3}
+
+```
+
 ## 
