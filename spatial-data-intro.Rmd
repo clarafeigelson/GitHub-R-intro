@@ -6,3 +6,174 @@ output: html_document
 ---
 
 # Intro to Spatial Data in R (Day 2)
+
+```{r}
+source("setup.R")
+```
+
+### 2.1 Vector Data
+
+```{r Polygons}
+# Copied from lesson plan
+
+# download county shapefile for the state of Colorado
+counties <- counties(state = "CO")
+```
+
+```{r Lines}
+# Copied from lesson plan
+
+roads <- roads(state = "CO", county = "Larimer")
+```
+
+```{r tmap}
+# Copied from lesson plan
+
+tmap_mode("view")
+
+#Using qtm
+qtm(counties)+
+  qtm(roads)
+
+#Using tm_shape
+tm_shape(counties)+
+  tm_polygons()+
+tm_shape(roads)+
+  tm_lines()
+```
+
+```{r sf}
+# Copied from lesson plan
+
+# filter out only Poudre Canyon Highway road data
+poudre_hwy <- roads %>% 
+  filter(FULLNAME == "Poudre Canyon Hwy")
+
+qtm(poudre_hwy)
+```
+
+```{r Points}
+# copied from lesson plan
+
+poudre_points <- data.frame(name = c("Mishawaka", "Rustic", "Blue Lake Trailhead"),
+                            long = c(-105.35634, -105.58159, -105.85563),
+                            lat = c(40.68752, 40.69687, 40.57960))
+
+poudre_points_sf <- st_as_sf(poudre_points, coords = c("long", "lat"), crs = 4326)
+
+qtm(poudre_hwy)+
+  qtm(poudre_points_sf)
+
+```
+
+```{r CRS}
+# Copied from lesson plan
+
+# see the CRS in the header metadata:
+counties
+
+#return just the CRS (more detailed)
+st_crs(counties)
+
+# check if two objects have same CRS
+st_crs(counties) == st_crs(poudre_points_sf)
+
+# transform one object's CRS to another's CRS
+poudre_points_prj <- st_transform(poudre_points_sf, st_crs(counties))
+
+#Now check that they match
+st_crs(poudre_points_prj) == st_crs(counties)
+
+```
+
+### 2.2 Raster Data
+
+```{r elevatr}
+# Copied from lesson plan
+
+elevation <- get_elev_raster(counties, z = 7)
+
+qtm(elevation)
+
+tm_shape(elevation)+
+  tm_raster(style = "cont", title = "Elevation (m)")
+
+elevation
+```
+
+```{r terra}
+# Copied from lesson plan
+
+# If we try this, we get an error
+elevation_crop <- crop(elevation, ext(poudre_hwy))
+
+# converting rasterlayer object to a terra SpatRaster object
+elevation <- rast(elevation)
+names(elevation) <- "Elevation"
+
+# run terra functions
+elevation_crop <- crop(elevation, ext(roads))
+
+tm_shape(elevation_crop)+
+  tm_raster(style = "cont")
+
+# final map
+tm_shape(elevation, bbox = st_bbox(poudre_hwy))+
+  tm_raster(style = "cont", title = "Elevation (m)")+
+tm_shape(poudre_hwy)+
+  tm_lines()+
+tm_shape(poudre_points_prj)+
+  tm_dots(size = 0.2)
+```
+
+### 3.1 Writing spatial data
+
+```{r save vector data}
+write_sf(poudre_hwy, "data/poudre_hwy.shp")
+
+write_sf(poudre_points_prj, "data/poudre_points.shp")
+
+```
+
+```{r save raster data}
+writeRaster(elevation_crop, "data/elevation_larimer.tif")
+```
+
+### 3.2 .RData files
+
+```{r save .RData file}
+save(poudre_hwy, poudre_points_prj, file = "data/spatial_objects.RData")
+```
+
+```{r remove and load files}
+rm(poudre_hwy, poudre_points_prj)
+
+load("data/spatial_objects.RData")
+saveRDS(elevation_crop, "data/elevation_crop.RDS")
+readRDS("data/elevation_crop.RDS") %>% rast()
+```
+
+### 3.3 Reading Spatial Data
+
+```{r read shape files}
+read_sf("data/poudre_hwy.shp")
+```
+
+```{r read raster files}
+rast("data/elevation_larimer.tif")
+```
+
+## 4. Exercises
+
+```{r Q1}
+sub_counties <- counties %>%
+  filter(FULLNAME == "Larimer"&"Denver"&"Pueblo")
+
+```
+
+```{r}
+poudre_hwy <- roads %>% 
+  filter(FULLNAME == "Poudre Canyon Hwy")
+
+qtm(poudre_hwy)
+```
