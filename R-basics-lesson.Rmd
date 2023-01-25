@@ -78,7 +78,7 @@ penguins$species
 
 ## 6.3.1 Exercises
 
-```{r} Question 1}
+```{r Question 1}
 myList["fruit"]
 
 penguins$flipper_length_mm
@@ -87,20 +87,20 @@ penguins[penguins$island=='Dream',]
 
 ```
 
-```{r} Question 2}
+```{r Question 2}
 unique(penguins$species, incomparables = FALSE)
 
 unique(penguins$island, incomparables = FALSE)
 ```
 
-```{r}Question 3}
+```{r Question 3}
 index1<-penguins[, c("species","island","flipper_length_mm")]
 
 index1<-index1[index1$island=='Dream',]
 
 ```
 
-```{r}Question 4}
+```{r Question 4}
 # using & in base R allows you to index based on multiple criteria in a row
 index2<-penguins[penguins$island=='Dream' & penguins$species == 'Adelie',]
 
@@ -166,20 +166,20 @@ penguins %>%
 
 ## 6.3.2 Exercises
 
-```{r} Question 1}
+```{r Question 1}
 penguins %>%
   select(year, everything())
 
 ```
 
-```{r} Question 2}
+```{r Question 2}
 penguins %>%
   add_column(size_group = 0) %>%
   mutate(size_group = if_else(body_mass_g > mean(body_mass_g,na.rm  = TRUE), 'large', 'small'))
 
 ```
 
-```{r} Question 3}
+```{r Question 3}
 penguins %>%
   group_by(year, species) %>%
   summarise(body_mass_avg = mean(body_mass_g, na.r = TRUE)) %>%
@@ -187,7 +187,62 @@ penguins %>%
   
 ```
 
-```{r} Question 4}
+```{r Question 4}
 penguins %>% 
   filter(!(year %in% c(2008, 2009)))
+```
+
+### 7. Visualize
+
+```{r}
+# Copied from lesson plan
+
+ggplot(penguins) + 
+  geom_histogram(mapping = aes(x = flipper_length_mm))
+
+# Histogram example: flipper length by species
+ggplot(penguins) +
+  geom_histogram(aes(x = flipper_length_mm, fill = species), alpha = 0.5, position = "identity") +
+  scale_fill_manual(values = c("darkorange","darkorchid","cyan4"))
+
+# Histogram with separate plots for each species
+ggplot(penguins) +
+  geom_histogram(aes(x = flipper_length_mm, fill = species), alpha = 0.5, position = "identity") +
+  scale_fill_manual(values = c("darkorange","darkorchid","cyan4")) +
+  facet_wrap(~species)
+
+# Total count by island and species
+ggplot(penguins) +
+  geom_bar(mapping = aes(x = island, fill = species))
+
+# Fancy bar plot
+ggplot(penguins, aes(x = island, fill = species)) +
+  geom_bar(alpha = 0.8) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4"), 
+                    guide = FALSE) +
+  theme_minimal() +
+  facet_wrap(~species, ncol = 1) +
+  coord_flip()
+
+# Scatterplot
+ggplot(penguins) +
+  geom_point(mapping = aes(x = body_mass_g, y = flipper_length_mm, color = species))
+```
+
+## 7.1 Exercises
+
+```{r Question 1}
+penguins %>% 
+  group_by(species) %>% 
+  summarise(mean_flipper_length = mean(flipper_length_mm, na.rm = TRUE)) %>% 
+  ggplot(aes(x = species, y = mean_flipper_length))+
+  geom_bar(stat = "identity")
+```
+
+```{r Question 2}
+
+penguins %>%
+  filter(island == "Dream") %>%
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point()
 ```
