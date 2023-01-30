@@ -9,6 +9,8 @@ output: html_document
 
 ```{r}
 source("setup.R")
+
+library(colorspace)
 ```
 
 ### 2.1 Vector Data
@@ -105,7 +107,7 @@ elevation
 # Copied from lesson plan
 
 # If we try this, we get an error
-elevation_crop <- crop(elevation, ext(poudre_hwy))
+# elevation_crop <- crop(elevation, ext(poudre_hwy))
 
 # converting rasterlayer object to a terra SpatRaster object
 elevation <- rast(elevation)
@@ -167,13 +169,29 @@ rast("data/elevation_larimer.tif")
 
 ```{r Q1}
 sub_counties <- counties %>%
-  filter(FULLNAME == "Larimer"&"Denver"&"Pueblo")
+  filter(NAME %in% c("Larimer","Denver","Pueblo"))
 
 ```
 
-```{r}
-poudre_hwy <- roads %>% 
-  filter(FULLNAME == "Poudre Canyon Hwy")
+```{r Q2}
 
-qtm(poudre_hwy)
+tm_shape(counties)+
+  tm_polygons(col = "ALAND")
+
+tm_shape(counties)+
+  tm_polygons(col = "AWATER")
+
+
 ```
+
+```{r Q3}
+poudre_points_prj$elevation<-extract(elevation, poudre_points_prj$Elevation)
+
+poudre_points_prj %>%
+ggplot()+
+  geom_bar(mapping = aes(x = name, y = elevation), stat = "identity")
+```
+
+Q4.
+
+Perhaps there are 4 features of the Poudre Canyon Highway because it is not a straight line and is made up of smaller sections of a single highway. The linestrings seem to have different coordinates, which could be the geometry of the smaller sections.
